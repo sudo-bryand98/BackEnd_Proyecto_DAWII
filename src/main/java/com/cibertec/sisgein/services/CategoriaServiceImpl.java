@@ -50,7 +50,7 @@ public class CategoriaServiceImpl implements ICategoriaService{
             if(categoria.isPresent()){
                 list.add(categoria.get());
                 response.getCategoriaResponse().setCategoria(list);
-                response.setMetadata("Respuesta nok","00","Categoria encontrada");
+                response.setMetadata("Respuesta ok","00","Categoria encontrada");
             }else {
                 response.setMetadata("Respuesta nok","-1","Categoria no encontrada");
                 return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.NOT_FOUND);
@@ -58,6 +58,34 @@ public class CategoriaServiceImpl implements ICategoriaService{
 
         } catch (Exception e){
             response.setMetadata("Respuesta nok","-1","Error al consultar por id");
+            e.getStackTrace();
+            return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoriaResponseRest> save(Categoria categoria) {
+
+        CategoriaResponseRest response = new CategoriaResponseRest();
+        List<Categoria> list = new ArrayList<>();
+
+        try {
+
+            Categoria categoriaSaved = categoriaDao.save(categoria);
+
+            if(categoriaSaved!=null){
+                list.add(categoriaSaved);
+                response.getCategoriaResponse().setCategoria(list);
+                response.setMetadata("Respuesta ok","00","Categoria guardada");
+            } else{
+                response.setMetadata("Respuesta nok","-1","Categoria no guardada");
+                return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e){
+            response.setMetadata("Respuesta nok","-1","Error al grabar categoria");
             e.getStackTrace();
             return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -1,13 +1,11 @@
 package com.cibertec.sisgein.controller;
 
+import com.cibertec.sisgein.model.Categoria;
 import com.cibertec.sisgein.response.CategoriaResponseRest;
 import com.cibertec.sisgein.services.ICategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,5 +30,12 @@ public class CategoriaRestController {
         return response;
     }
 
+    // GUARDAR CATEGORIA
+
+    @PostMapping("/categorias")
+    public ResponseEntity<CategoriaResponseRest> save(@RequestBody Categoria categoria){
+        ResponseEntity<CategoriaResponseRest> response = service.save(categoria);
+        return response;
+    }
 
 }
