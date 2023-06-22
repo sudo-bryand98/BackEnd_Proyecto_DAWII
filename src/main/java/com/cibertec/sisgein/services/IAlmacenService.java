@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface IAlmacenService {
     public ResponseEntity<AlmacenResponseRest> save(Almacen almacen, Long encargadoId);
+    public ResponseEntity<AlmacenResponseRest> searchById(Long idal);
 }

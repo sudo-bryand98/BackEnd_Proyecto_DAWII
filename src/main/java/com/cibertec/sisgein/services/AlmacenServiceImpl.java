@@ -9,6 +9,7 @@ import com.cibertec.sisgein.response.ResponseRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class AlmacenServiceImpl implements IAlmacenService{
 
 
     @Override
+    @Transactional
     public ResponseEntity<AlmacenResponseRest> save(Almacen almacen, Long encargadoId) {
 
         AlmacenResponseRest response = new AlmacenResponseRest();
@@ -51,7 +53,7 @@ public class AlmacenServiceImpl implements IAlmacenService{
             if(almacenSaved != null){
                 list.add(almacenSaved);
                 response.getAlmacenResponse().setAlmacens(list);
-                response.setMetadata("respuesta nok","00","Almacen guardado");
+                response.setMetadata("respuesta ok","00","Almacen guardado");
             }else{
                 response.setMetadata("respuesta nok","-1","Almacen no guardado");
                 return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.BAD_REQUEST);
@@ -60,6 +62,34 @@ public class AlmacenServiceImpl implements IAlmacenService{
         }catch (Exception e){
             e.getStackTrace();
             response.setMetadata("respuesta nok","-1","Error al guardar almacen");
+            return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<AlmacenResponseRest> searchById(Long idal) {
+        AlmacenResponseRest response = new AlmacenResponseRest();
+        List<Almacen> list = new ArrayList<>();
+
+        try{
+            //BUSCAR ALMACEN POR ID
+            Optional<Almacen> almacen = almacenDao.findById(idal);
+
+            if(almacen.isPresent()){
+                list.add(almacen.get());
+                response.getAlmacenResponse().setAlmacens(list);
+                response.setMetadata("respuesta ok","00","Almacen encontrado");
+            }else{
+                response.setMetadata("respuesta nok","-1","Almacen no encontrado");
+                return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e){
+            e.getStackTrace();
+            response.setMetadata("respuesta nok","-1","Error al buscar almacen por ID");
             return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

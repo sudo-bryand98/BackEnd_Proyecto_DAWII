@@ -44,4 +44,14 @@ public class AlmacenRestController {
         return response;
     }
 
+    // OBTENER ALMACEN POR ID
+
+    @GetMapping("/almacenes/{idal}")
+    public ResponseEntity<AlmacenResponseRest> searchAlmacenById(@PathVariable Long idal){
+        ResponseEntity<AlmacenResponseRest> response = almacenService.searchById(idal);
+        return response;
+    }
+
+
+
 }
