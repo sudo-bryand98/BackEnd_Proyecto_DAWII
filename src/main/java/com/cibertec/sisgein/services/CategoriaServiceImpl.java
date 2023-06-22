@@ -94,6 +94,7 @@ public class CategoriaServiceImpl implements ICategoriaService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<CategoriaResponseRest> update(Categoria categoria, Long id) {
         CategoriaResponseRest response = new CategoriaResponseRest();
         List<Categoria> list = new ArrayList<>();
@@ -124,6 +125,24 @@ public class CategoriaServiceImpl implements ICategoriaService{
 
         } catch (Exception e){
             response.setMetadata("Respuesta nok","-1","Error al grabar categoria");
+            e.getStackTrace();
+            return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoriaResponseRest> deleteById(Long id) {
+        CategoriaResponseRest response = new CategoriaResponseRest();
+
+        try {
+
+            categoriaDao.deleteById(id);
+            response.setMetadata("Respuesta ok","00","Categoria eliminado");
+
+        } catch (Exception e){
+            response.setMetadata("Respuesta nok","-1","Error al eliminar");
             e.getStackTrace();
             return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
