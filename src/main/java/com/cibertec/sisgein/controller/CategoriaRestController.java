@@ -38,4 +38,12 @@ public class CategoriaRestController {
         return response;
     }
 
+    // ACTUALIZAR CATEGORIA
+
+    @PutMapping("/categorias/{id}")
+    public ResponseEntity<CategoriaResponseRest> update(@RequestBody Categoria categoria, @PathVariable Long id){
+        ResponseEntity<CategoriaResponseRest> response = service.update(categoria, id);
+        return response;
+    }
+
 }

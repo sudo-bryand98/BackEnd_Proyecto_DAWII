@@ -3,6 +3,7 @@ package com.cibertec.sisgein.services;
 import com.cibertec.sisgein.dao.ICategoriaDao;
 import com.cibertec.sisgein.model.Categoria;
 import com.cibertec.sisgein.response.CategoriaResponseRest;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,4 +92,43 @@ public class CategoriaServiceImpl implements ICategoriaService{
         }
         return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<CategoriaResponseRest> update(Categoria categoria, Long id) {
+        CategoriaResponseRest response = new CategoriaResponseRest();
+        List<Categoria> list = new ArrayList<>();
+
+        try {
+
+           Optional<Categoria> categoriaSearch = categoriaDao.findById(id);
+
+           if(categoriaSearch.isPresent()){
+               //SE ACTUALIZARÁ EL REGISTRO
+                categoriaSearch.get().setNombreCat(categoria.getNombreCat());
+
+                Categoria categoriaToUpdate = categoriaDao.save(categoriaSearch.get());
+
+                if(categoriaToUpdate != null){
+                    list.add(categoriaToUpdate);
+                    response.getCategoriaResponse().setCategoria(list);
+                    response.setMetadata("Respuesta ok","00","Categoria actualizada");
+                }else{
+                    response.setMetadata("Respuesta nok","-1","Categoria no actualizada");
+                    return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.BAD_REQUEST);
+                }
+
+           } else{
+               response.setMetadata("Respuesta nok","-1","Categoria no encontrada");
+               return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.NOT_FOUND);
+           }
+
+        } catch (Exception e){
+            response.setMetadata("Respuesta nok","-1","Error al grabar categoria");
+            e.getStackTrace();
+            return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<CategoriaResponseRest>(response, HttpStatus.OK);
+    }
+
+
 }
