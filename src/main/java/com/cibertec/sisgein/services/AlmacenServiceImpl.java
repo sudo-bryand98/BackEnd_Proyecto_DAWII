@@ -114,4 +114,35 @@ public class AlmacenServiceImpl implements IAlmacenService{
 
         return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.OK);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<AlmacenResponseRest> search() {
+        AlmacenResponseRest response = new AlmacenResponseRest();
+        List<Almacen> list = new ArrayList<>();
+        List<Almacen> listAux = new ArrayList<>();
+
+        try{
+            //LISTAR ALMACENES
+            listAux = (List<Almacen>) almacenDao.findAll();
+
+            if(listAux.size() > 0){
+                listAux.stream().forEach((p) ->{
+                    list.add(p);
+                });
+
+                response.getAlmacenResponse().setAlmacens(list);
+                response.setMetadata("respuesta ok","00","Almacenes encontrados");
+            }else {
+                response.setMetadata("respuesta nok","-1","Almacenes no encontrados");
+                return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e){
+            e.getStackTrace();
+            response.setMetadata("respuesta nok","-1","Error al buscar los almacenes");
+            return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.OK);
+    }
 }

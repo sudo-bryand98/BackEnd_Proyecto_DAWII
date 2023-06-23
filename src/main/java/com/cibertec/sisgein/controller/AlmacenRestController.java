@@ -58,6 +58,12 @@ public class AlmacenRestController {
         return response;
     }
 
+    @GetMapping("/almacenes")
+    public ResponseEntity<AlmacenResponseRest> search(){
+        ResponseEntity<AlmacenResponseRest> response = almacenService.search();
+        return response;
+    }
+
 
 
 }
