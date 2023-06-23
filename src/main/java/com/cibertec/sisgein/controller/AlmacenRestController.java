@@ -52,6 +52,12 @@ public class AlmacenRestController {
         return response;
     }
 
+    @DeleteMapping("/almacenes/{idal}")
+    public ResponseEntity<AlmacenResponseRest> deleteAlmacenById(@PathVariable Long idal){
+        ResponseEntity<AlmacenResponseRest> response = almacenService.deleteyId(idal);
+        return response;
+    }
+
 
 
 }

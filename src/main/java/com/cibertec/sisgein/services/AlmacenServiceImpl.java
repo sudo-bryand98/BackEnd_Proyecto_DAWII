@@ -95,4 +95,23 @@ public class AlmacenServiceImpl implements IAlmacenService{
 
         return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.OK);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<AlmacenResponseRest> deleteyId(Long idal) {
+        AlmacenResponseRest response = new AlmacenResponseRest();
+
+        try{
+            //ELIMINAR ALMACEN POR ID
+            almacenDao.deleteById(idal);
+            response.setMetadata("respuesta ok","00","Almacen eliminado");
+
+        }catch (Exception e){
+            e.getStackTrace();
+            response.setMetadata("respuesta nok","-1","Error al almacen");
+            return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.OK);
+    }
 }
