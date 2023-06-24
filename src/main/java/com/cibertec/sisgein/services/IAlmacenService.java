@@ -9,4 +9,5 @@ public interface IAlmacenService {
     public ResponseEntity<AlmacenResponseRest> searchById(Long idal);
     public ResponseEntity<AlmacenResponseRest> deleteyId(Long idal);
     public ResponseEntity<AlmacenResponseRest> search();
+    public ResponseEntity<AlmacenResponseRest> update(Almacen almacen, Long encargadoId, Long idal);
 }

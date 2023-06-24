@@ -11,6 +11,8 @@ import java.io.Serializable;
 @Table(name = "tb_almacen")
 public class Almacen implements Serializable {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idal;
