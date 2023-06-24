@@ -64,6 +64,17 @@ public class AlmacenRestController {
         return response;
     }
 
+    @PutMapping("/almacenes/{idal}")
+    public ResponseEntity<AlmacenResponseRest> update(@RequestParam("nombalm") String nombalm, @RequestParam("direccion") String direccion,
+                                                    @RequestParam("encargadoId") Long encargadoID,
+                                                      @PathVariable Long idal) throws IOException {
+        Almacen almacen = new Almacen();
+        almacen.setNombalm(nombalm);
+        almacen.setDireccion(direccion);
 
+        ResponseEntity<AlmacenResponseRest> response = almacenService.update(almacen, encargadoID, idal);
+
+        return response;
+    }
 
 }

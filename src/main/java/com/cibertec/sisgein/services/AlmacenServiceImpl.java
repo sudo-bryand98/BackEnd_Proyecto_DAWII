@@ -163,21 +163,36 @@ public class AlmacenServiceImpl implements IAlmacenService{
                 return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.NOT_FOUND);
             }
 
-            // GUARDAR ALMACEN
-            Almacen almacenSaved = almacenDao.save(almacen);
+            // BUSCAR ALMACEN PARA ACTUALIZAR
+            Optional<Almacen> almacenSearch = almacenDao.findById(idal);
 
-            if(almacenSaved != null){
-                list.add(almacenSaved);
-                response.getAlmacenResponse().setAlmacens(list);
-                response.setMetadata("respuesta ok","00","Almacen guardado");
+            if(almacenSearch.isPresent()){
+                //SE ACTUALIZARA EL ALMACEN
+
+                almacenSearch.get().setNombalm(almacen.getNombalm());
+                almacenSearch.get().setDireccion(almacen.getDireccion());
+                almacenSearch.get().setEncargado(almacen.getEncargado());
+
+                // ACTUALIZANDO ALMACEN EN LA BD
+                Almacen almacenToUpdate = almacenDao.save(almacenSearch.get());
+
+                if(almacenToUpdate != null){
+                    list.add(almacenToUpdate);
+                    response.getAlmacenResponse().setAlmacens(list);
+                    response.setMetadata("respuesta ok","00","Almacen actualizado");
+                }else {
+                    response.setMetadata("respuesta nok","-1","Almacen no actualizado");
+                    return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.BAD_REQUEST);
+                }
+
             }else{
-                response.setMetadata("respuesta nok","-1","Almacen no guardado");
-                return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.BAD_REQUEST);
+                response.setMetadata("respuesta nok","-1","Almacen no encontrado");
+                return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.NOT_FOUND);
             }
 
         }catch (Exception e){
             e.getStackTrace();
-            response.setMetadata("respuesta nok","-1","Error al guardar almacen");
+            response.setMetadata("respuesta nok","-1","Error al actualizar almacen");
             return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
