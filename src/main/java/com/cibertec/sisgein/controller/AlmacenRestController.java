@@ -1,12 +1,13 @@
 package com.cibertec.sisgein.controller;
 
 import com.cibertec.sisgein.model.Almacen;
-import com.cibertec.sisgein.model.Categoria;
 import com.cibertec.sisgein.response.AlmacenResponseRest;
-import com.cibertec.sisgein.response.CategoriaResponseRest;
 import com.cibertec.sisgein.services.IAlmacenService;
+import com.cibertec.sisgein.util.util;
+import jdk.jshell.execution.Util;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -23,23 +24,16 @@ public class AlmacenRestController {
         this.almacenService = almacenService;
     }
 
-    /**
-     *
-     * @param nombalm
-     * @param direccion
-     * @param encargadoID
-     * @return
-     * @throws IOException
-     */
 
     @PostMapping("/almacenes")
-    public ResponseEntity<AlmacenResponseRest> save(@RequestParam("nombalm") String nombalm, @RequestParam("direccion") String direccion,
-                                                    @RequestParam("encargadoId") Long encargadoID) throws IOException {
+    public ResponseEntity<AlmacenResponseRest> save(@RequestParam("foto") MultipartFile foto, @RequestParam("nombalm") String nombalm, @RequestParam("direccion") String direccion,
+                                                    @RequestParam("ide") Long ide) throws IOException {
         Almacen almacen = new Almacen();
         almacen.setNombalm(nombalm);
         almacen.setDireccion(direccion);
+        almacen.setFoto(util.compressZLib(foto.getBytes()));
 
-        ResponseEntity<AlmacenResponseRest> response = almacenService.save(almacen, encargadoID);
+        ResponseEntity<AlmacenResponseRest> response = almacenService.save(almacen, ide);
 
         return response;
     }
@@ -65,14 +59,16 @@ public class AlmacenRestController {
     }
 
     @PutMapping("/almacenes/{idal}")
-    public ResponseEntity<AlmacenResponseRest> update(@RequestParam("nombalm") String nombalm, @RequestParam("direccion") String direccion,
-                                                    @RequestParam("encargadoId") Long encargadoID,
+    public ResponseEntity<AlmacenResponseRest> update(@RequestParam("foto") MultipartFile foto, @RequestParam("nombalm") String nombalm,
+                                                      @RequestParam("direccion") String direccion,
+                                                    @RequestParam("ide") Long ide,
                                                       @PathVariable Long idal) throws IOException {
         Almacen almacen = new Almacen();
         almacen.setNombalm(nombalm);
         almacen.setDireccion(direccion);
+        almacen.setFoto(util.compressZLib(foto.getBytes()));
 
-        ResponseEntity<AlmacenResponseRest> response = almacenService.update(almacen, encargadoID, idal);
+        ResponseEntity<AlmacenResponseRest> response = almacenService.update(almacen, ide, idal);
 
         return response;
     }

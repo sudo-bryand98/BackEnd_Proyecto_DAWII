@@ -6,6 +6,7 @@ import com.cibertec.sisgein.model.Almacen;
 import com.cibertec.sisgein.model.Encargado;
 import com.cibertec.sisgein.response.AlmacenResponseRest;
 import com.cibertec.sisgein.response.ResponseRest;
+import com.cibertec.sisgein.util.util;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,10 @@ public class AlmacenServiceImpl implements IAlmacenService{
             Optional<Almacen> almacen = almacenDao.findById(idal);
 
             if(almacen.isPresent()){
+
+                byte[] imageDescompressed = util.decompressZLib(almacen.get().getFoto());
+                almacen.get().setFoto(imageDescompressed);
+
                 list.add(almacen.get());
                 response.getAlmacenResponse().setAlmacens(list);
                 response.setMetadata("respuesta ok","00","Almacen encontrado");
@@ -128,6 +133,7 @@ public class AlmacenServiceImpl implements IAlmacenService{
 
             if(listAux.size() > 0){
                 listAux.stream().forEach((p) ->{
+                    byte[] imageDescompressed = util.decompressZLib(p.getFoto());
                     list.add(p);
                 });
 
@@ -172,6 +178,8 @@ public class AlmacenServiceImpl implements IAlmacenService{
                 almacenSearch.get().setNombalm(almacen.getNombalm());
                 almacenSearch.get().setDireccion(almacen.getDireccion());
                 almacenSearch.get().setEncargado(almacen.getEncargado());
+                almacenSearch.get().setFoto(almacen.getFoto());
+
 
                 // ACTUALIZANDO ALMACEN EN LA BD
                 Almacen almacenToUpdate = almacenDao.save(almacenSearch.get());

@@ -24,4 +24,9 @@ public class Almacen implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Encargado encargado;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "foto", length = 16777215)
+    private byte[] foto;
 }
