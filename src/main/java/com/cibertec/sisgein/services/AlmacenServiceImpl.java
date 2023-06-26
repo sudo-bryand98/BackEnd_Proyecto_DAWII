@@ -113,7 +113,7 @@ public class AlmacenServiceImpl implements IAlmacenService{
 
         }catch (Exception e){
             e.getStackTrace();
-            response.setMetadata("respuesta nok","-1","Error al almacen");
+            response.setMetadata("respuesta nok","-1","Error al eliminar almacen");
             return new ResponseEntity<AlmacenResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

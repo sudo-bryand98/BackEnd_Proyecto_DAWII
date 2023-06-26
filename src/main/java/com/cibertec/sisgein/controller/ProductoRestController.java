@@ -36,4 +36,18 @@ public class ProductoRestController {
 
         return response;
     }
+
+    // OBTENER PRODUCTO POR ID
+
+    @GetMapping("/productos/{idp}")
+    public ResponseEntity<ProductoResponseRest> searchProductoById(@PathVariable Long idp){
+        ResponseEntity<ProductoResponseRest> response = productoService.searchById(idp);
+        return response;
+    }
+
+    @DeleteMapping("/productos/{idp}")
+    public ResponseEntity<ProductoResponseRest> deleteProductoById(@PathVariable Long idp){
+        ResponseEntity<ProductoResponseRest> response = productoService.deleteyId(idp);
+        return response;
+    }
 }
