@@ -121,8 +121,35 @@ public class ProductoServiceImpl implements IProductoService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<ProductoResponseRest> search() {
-        return null;
+
+        ProductoResponseRest response = new ProductoResponseRest();
+        List<Producto> list = new ArrayList<>();
+        List<Producto> listAux = new ArrayList<>();
+
+        try{
+            //LISTAR ALMACENES
+            listAux = (List<Producto>) productoDao.findAll();
+
+            if(listAux.size() > 0){
+                listAux.stream().forEach((p) ->{
+                    list.add(p);
+                });
+
+                response.getProductoResponse().setProductos(list);
+                response.setMetadata("respuesta ok","00","Productos encontrados");
+            }else {
+                response.setMetadata("respuesta nok","-1","Productos no encontrados");
+                return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e){
+            e.getStackTrace();
+            response.setMetadata("respuesta nok","-1","Error al buscar los productos");
+            return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.OK);
     }
 
     @Override
