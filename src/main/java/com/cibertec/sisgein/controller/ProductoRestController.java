@@ -59,4 +59,21 @@ public class ProductoRestController {
         ResponseEntity<ProductoResponseRest> response = productoService.search();
         return response;
     }
+
+    //ACTUALIZAR PRODUCTO
+
+    @PutMapping("/productos/{idp}")
+    public ResponseEntity<ProductoResponseRest> update(@RequestParam("nombrep") String nombrep,
+                                                      @RequestParam("stock") Long stock,
+                                                       @RequestParam("idal") Long idal,
+                                                       @RequestParam("id") Long id,
+                                                      @PathVariable Long idp) throws IOException {
+        Producto producto = new Producto();
+        producto.setNombrep(nombrep);
+        producto.setStock(stock);
+
+        ResponseEntity<ProductoResponseRest> response = productoService.update(producto, idal, id, idp);
+
+        return response;
+    }
 }

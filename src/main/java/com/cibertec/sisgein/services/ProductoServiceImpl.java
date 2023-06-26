@@ -6,9 +6,7 @@ import com.cibertec.sisgein.dao.IProductoDao;
 import com.cibertec.sisgein.model.Almacen;
 import com.cibertec.sisgein.model.Categoria;
 import com.cibertec.sisgein.model.Producto;
-import com.cibertec.sisgein.response.AlmacenResponseRest;
 import com.cibertec.sisgein.response.ProductoResponseRest;
-import com.cibertec.sisgein.util.util;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -153,7 +151,61 @@ public class ProductoServiceImpl implements IProductoService{
     }
 
     @Override
-    public ResponseEntity<ProductoResponseRest> update(Producto producto, Long almcenId, Long categoriaId) {
-        return null;
+    @Transactional
+    public ResponseEntity<ProductoResponseRest> update(Producto producto, Long almcenId, Long categoriaId, Long idp) {
+        ProductoResponseRest response = new ProductoResponseRest();
+        List<Producto> list = new ArrayList<>();
+
+        try{
+            //BUSCAR CATEGORIA ENVIADA AL PRODUCTO
+            Optional<Categoria> categoria = categoriaDao.findById(categoriaId);
+
+            //BUSCAR ALMACEN ENVIADO AL PRODUCTO
+            Optional<Almacen> almacen = almacenDao.findById(almcenId);
+
+            if(categoria.isPresent() && almacen.isPresent()){
+                producto.setCategoria(categoria.get());
+                producto.setAlmacen(almacen.get());
+            }else{
+                response.setMetadata("respuesta nok","-1","Categoria o almacen no encontrados asociados al producto");
+                return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // BUSCAR PRODUCTO PARA ACTUALIZAR
+            Optional<Producto> productoSearch = productoDao.findById(idp);
+
+            if(productoSearch.isPresent()){
+                //SE ACTUALIZARA EL ALMACEN
+
+                productoSearch.get().setNombrep(producto.getNombrep());
+                productoSearch.get().setStock(producto.getStock());
+                productoSearch.get().setAlmacen(producto.getAlmacen());
+                productoSearch.get().setCategoria(producto.getCategoria());
+
+
+                // ACTUALIZANDO ALMACEN EN LA BD
+                Producto productoToUpdate = productoDao.save(productoSearch.get());
+
+                if(productoToUpdate != null){
+                    list.add(productoToUpdate);
+                    response.getProductoResponse().setProductos(list);
+                    response.setMetadata("respuesta ok","00","Producto actualizado");
+                }else {
+                    response.setMetadata("respuesta nok","-1","Producto no actualizado");
+                    return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.BAD_REQUEST);
+                }
+
+            }else{
+                response.setMetadata("respuesta nok","-1","Producto no encontrado");
+                return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e){
+            e.getStackTrace();
+            response.setMetadata("respuesta nok","-1","Error al actualizar producto");
+            return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.OK);
     }
 }
